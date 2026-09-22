@@ -401,6 +401,50 @@
     </div>
   </div>
 
+  <!-- MODAL: START LIST & ATHLETE LINEUP -->
+  <div id="startListModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-[#121A2B] border border-blue-500/30 rounded-2xl max-w-2xl w-full max-h-[85vh] flex flex-col shadow-2xl overflow-hidden">
+      
+      <!-- Modal Header -->
+      <div class="px-5 py-4 border-b border-slate-800 flex items-center justify-between bg-slate-900/90">
+        <div>
+          <div class="flex items-center gap-2">
+            <span id="slSportBadge" class="text-xs font-bold px-2 py-0.5 rounded bg-blue-500/20 text-blue-400 border border-blue-500/30">Sport</span>
+            <span id="slTimeBadge" class="text-xs font-mono font-bold text-orange-400">Time</span>
+          </div>
+          <h3 id="slTitle" class="font-extrabold text-white text-base mt-1">Start List & Lineup</h3>
+          <p id="slSubtitle" class="text-xs text-slate-400 mt-0.5">Venue & Stage</p>
+        </div>
+        <button onclick="closeStartListModal()" class="text-slate-400 hover:text-white p-1 rounded-lg">✕</button>
+      </div>
+
+      <!-- Controls: Toggle & Search -->
+      <div class="px-5 py-2.5 border-b border-slate-800 bg-[#0E1524] flex flex-wrap items-center justify-between gap-3 text-xs">
+        <div class="flex items-center gap-3">
+          <label class="flex items-center gap-2 cursor-pointer select-none">
+            <input type="checkbox" id="slIndiaOnlyToggle" onchange="renderStartListModalBody()" class="w-4 h-4 rounded text-orange-500 accent-orange-500 cursor-pointer" />
+            <span class="font-bold text-orange-400 flex items-center gap-1"><span>🇮🇳</span> India Competitors Only</span>
+          </label>
+        </div>
+        <div class="flex items-center gap-2">
+          <input type="text" id="slSearchInput" oninput="renderStartListModalBody()" placeholder="Search athlete or country..." class="bg-slate-900 border border-slate-700/80 rounded px-2.5 py-1 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-blue-500 w-44" />
+          <span id="slCompetitorCount" class="text-slate-400 font-mono text-[11px]">0 athletes</span>
+        </div>
+      </div>
+
+      <!-- Competitors List -->
+      <div id="slListContainer" class="p-4 sm:p-5 flex-1 overflow-auto custom-scrollbar space-y-2 bg-[#0B0F19]">
+        <!-- Injected via JavaScript -->
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="px-5 py-3 border-t border-slate-800 bg-[#121A2B] flex items-center justify-between text-xs">
+        <span class="text-slate-400">Official Asian Games Start List</span>
+        <button onclick="closeStartListModal()" class="bg-slate-800 hover:bg-slate-700 text-white px-4 py-1.5 rounded-lg transition font-medium">Close</button>
+      </div>
+    </div>
+  </div>
+
   <!-- JAVASCRIPT APPLICATION LOGIC -->
   <script>
     // --- STATE MANAGEMENT ---
@@ -714,24 +758,25 @@
         const isLive = item.IsLive;
         const isMedal = !!item.Medal || item.UnitDesc?.toLowerCase().includes('final') || item.PhaseDesc?.toLowerCase().includes('final');
 
-        // Status badge format
+        // Status badge format - Clickable button opening start list
+        const matchId = (item.ResCode || item.Key || '').replace(/'/g, "\\'");
         let statusBadge = '';
         if (isLive) {
-          statusBadge = `<span class="flex items-center gap-1.5 bg-red-500/20 text-red-400 border border-red-500/30 text-[10px] font-extrabold px-2 py-0.5 rounded-full uppercase tracking-wider">
+          statusBadge = `<button onclick="openStartListModal('${matchId}')" class="flex items-center gap-1.5 bg-red-500/20 text-red-400 border border-red-500/30 text-[10px] font-extrabold px-2.5 py-0.5 rounded-full uppercase tracking-wider hover:bg-red-500/30 cursor-pointer transition">
             <span class="w-2 h-2 rounded-full bg-red-500 pulse-live"></span> LIVE NOW
-          </span>`;
+          </button>`;
         } else if (item.Status === "FINISHED") {
-          statusBadge = `<span class="bg-slate-800 text-slate-400 border border-slate-700 text-[10px] font-semibold px-2 py-0.5 rounded-full">
-            Completed
-          </span>`;
+          statusBadge = `<button onclick="openStartListModal('${matchId}')" class="bg-slate-800 hover:bg-slate-700 text-slate-400 border border-slate-700 text-[10px] font-semibold px-2.5 py-0.5 rounded-full cursor-pointer transition">
+            Completed ▾
+          </button>`;
         } else if (item.Status === "START_LIST") {
-          statusBadge = `<span class="bg-purple-500/20 text-purple-300 border border-purple-500/30 text-[10px] font-semibold px-2 py-0.5 rounded-full">
-            Start List
-          </span>`;
+          statusBadge = `<button onclick="openStartListModal('${matchId}')" class="bg-purple-500/20 hover:bg-purple-500/40 text-purple-300 border border-purple-500/40 text-[10px] font-bold px-2.5 py-0.5 rounded-full cursor-pointer transition flex items-center gap-1">
+            <span>Start List</span> <span>▾</span>
+          </button>`;
         } else {
-          statusBadge = `<span class="bg-blue-500/20 text-blue-300 border border-blue-500/30 text-[10px] font-semibold px-2 py-0.5 rounded-full">
-            Scheduled
-          </span>`;
+          statusBadge = `<button onclick="openStartListModal('${matchId}')" class="bg-blue-500/20 hover:bg-blue-500/40 text-blue-300 border border-blue-500/30 text-[10px] font-semibold px-2.5 py-0.5 rounded-full cursor-pointer transition">
+            Scheduled ▾
+          </button>`;
         }
 
         // Head-to-Head or Individual Event Layout
@@ -783,7 +828,32 @@
             </div>
           `;
         } else {
-          // Individual Event / Multilateral Layout
+          // Individual Event / Multilateral Layout with Competitors preview
+          const comps = item.Competitors || [];
+          const indComps = comps.filter(c => c.Org === 'IND' || c.Name === 'India');
+          let indPreviewHtml = '';
+
+          if (indComps.length > 0) {
+            indPreviewHtml = `
+              <div class="mt-2 text-xs bg-orange-950/30 border border-orange-500/40 rounded-xl p-2.5 space-y-1 cursor-pointer hover:bg-orange-950/50 transition group" onclick="openStartListModal('${matchId}')" title="Click to view full start list">
+                <div class="text-[11px] font-bold text-orange-400 flex items-center justify-between">
+                  <span class="flex items-center gap-1"><span>🇮🇳</span> Indian Athletes (${indComps.length}):</span>
+                  <span class="text-[10px] text-slate-400 group-hover:text-blue-300 font-medium transition flex items-center gap-0.5">
+                    <span>View all ${comps.length}</span>
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                  </span>
+                </div>
+                <div class="flex flex-wrap gap-1.5 pt-0.5">
+                  ${indComps.map(c => `
+                    <span class="bg-slate-900 border border-orange-500/40 text-slate-100 px-2 py-0.5 rounded text-[11px] font-semibold flex items-center gap-1 shadow-sm">
+                      <span class="text-orange-400">★</span> ${c.Name} ${c.Bib ? `<span class="text-slate-400 font-mono text-[10px]">(#${c.Bib})</span>` : ''} ${(c.Pos || c.Lane) ? `<span class="text-blue-400 font-mono text-[10px]">${c.Lane ? 'Lane ' + c.Lane : 'Pos ' + c.Pos}</span>` : ''}
+                    </span>
+                  `).join('')}
+                </div>
+              </div>
+            `;
+          }
+
           matchBody = `
             <div class="bg-slate-900/90 rounded-xl p-3 border border-slate-800/90 space-y-1.5">
               <div class="flex items-center justify-between text-xs">
@@ -794,9 +864,13 @@
                 <span class="text-blue-400">📍</span>
                 <span class="truncate">${item.VenueDescS || item.VenueDesc || 'Venue TBD'}</span>
               </div>
+              ${indPreviewHtml}
             </div>
           `;
         }
+
+        const totalAthletesCount = item.Competitors?.length || (item.Home?.Members?.length ? item.Home.Members.length + (item.Away?.Members?.length || 0) : 0);
+        const lineupBtnText = totalAthletesCount > 0 ? `👥 View Full Start List (${totalAthletesCount} Athletes)` : `👥 View Start List & Lineup`;
 
         card.className = `glass-panel rounded-2xl p-4 space-y-3.5 border transition hover:border-slate-600 ${
           isIndia ? 'border-orange-500/30 bg-gradient-to-br from-[#161F30] via-[#121A2B] to-[#1a1c29]' : 'border-slate-800'
@@ -830,6 +904,12 @@
 
           <!-- Match Body -->
           ${matchBody}
+
+          <!-- View Full Start List Action Button -->
+          <button onclick="openStartListModal('${matchId}')" class="w-full py-1.5 px-3 rounded-xl bg-slate-800/80 hover:bg-slate-700/80 border border-slate-700/60 hover:border-blue-500/50 text-xs font-bold text-slate-200 flex items-center justify-center gap-2 transition active:scale-[0.99] cursor-pointer">
+            <span>${lineupBtnText}</span>
+            <svg class="w-3.5 h-3.5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+          </button>
 
           <!-- Timing & Venue Footer -->
           <div class="pt-2 border-t border-slate-800/80 flex items-center justify-between text-xs">
@@ -913,6 +993,355 @@
         container.appendChild(div);
       });
     }
+
+    // --- START LIST & ATHLETE LINEUP MODAL ---
+    let activeStartListItem = null;
+
+    function getCountryFlag(org) {
+      if (!org) return '🏳️';
+      const flags = {
+        'IND': '🇮🇳', 'JPN': '🇯🇵', 'CHN': '🇨🇳', 'KOR': '🇰🇷',
+        'THA': '🇹🇭', 'HKG': '🇭🇰', 'TPE': '🇹🇼', 'MGL': '🇲🇳',
+        'IRI': '🇮🇷', 'KAZ': '🇰🇿', 'UZB': '🇺🇿', 'PHI': '🇵🇭',
+        'INA': '🇮🇩', 'MAS': '🇲🇾', 'SGP': '🇸🇬', 'VIE': '🇻🇳',
+        'PAK': '🇵🇰', 'SRI': '🇱🇰', 'BAN': '🇧🇩', 'NEP': '🇳🇵',
+        'QAT': '🇶🇦', 'KSA': '🇸🇦', 'UAE': '🇦🇪', 'BHR': '🇧🇭',
+        'KUW': '🇰🇼', 'OMA': '🇴🇲', 'JOR': '🇯🇴', 'IRQ': '🇮🇶',
+        'AFG': '🇦🇫', 'PRK': '🇰🇵', 'MAC': '🇲🇴', 'BRU': '🇧🇳',
+        'CAM': '🇰🇭', 'LAO': '🇱🇦', 'MYA': '🇲🇲', 'MDV': '🇲🇻',
+        'BHU': '🇧🇹', 'TLS': '🇹🇱', 'YEM': '🇾🇪', 'SYR': '🇸🇾',
+        'LBN': '🇱🇧', 'PLE': '🇵🇸'
+      };
+      return flags[org] || '🚩';
+    }
+
+    function openStartListModal(resCodeOrKey) {
+      if (!resCodeOrKey) return;
+      let item = null;
+      const currentList = appData.schedule[selectedDate] || [];
+      item = currentList.find(x => x.ResCode === resCodeOrKey || x.Key === resCodeOrKey);
+
+      if (!item && appData.schedule) {
+        for (const dateKey of Object.keys(appData.schedule)) {
+          const list = appData.schedule[dateKey] || [];
+          item = list.find(x => x.ResCode === resCodeOrKey || x.Key === resCodeOrKey);
+          if (item) break;
+        }
+      }
+
+      if (!item) return;
+      activeStartListItem = item;
+
+      // Update Header Info
+      const icon = getSportIcon(item.Disc);
+      const times = formatTime(item.DateTimeRaw);
+
+      document.getElementById('slSportBadge').textContent = `${icon} ${item.DiscDesc || item.Disc}`;
+      document.getElementById('slTimeBadge').textContent = `${times.ist} IST | ${times.jst} JST`;
+      document.getElementById('slTitle').textContent = item.UnitDesc || item.PhaseDesc || item.EventDesc || 'Start List & Lineup';
+      document.getElementById('slSubtitle').textContent = [
+        item.EventDesc,
+        item.VenueDescS || item.VenueDesc,
+        item.PhaseDesc
+      ].filter(Boolean).join(' • ') || 'Asian Games 2026';
+
+      // Reset controls
+      document.getElementById('slSearchInput').value = '';
+      document.getElementById('slIndiaOnlyToggle').checked = false;
+
+      // Render modal content
+      renderStartListModalBody();
+
+      // Show Modal
+      document.getElementById('startListModal').classList.remove('hidden');
+
+      // If competitors not yet loaded and local proxy server is available, try fetching live
+      if ((!item.Competitors || item.Competitors.length === 0) && item.Disc && item.ResCode) {
+        fetch(`/api/results?disc=${encodeURIComponent(item.Disc)}&rsc=${encodeURIComponent(item.ResCode)}`)
+          .then(res => res.ok ? res.json() : null)
+          .then(data => {
+            if (data && data.Competitors && data.Competitors.length > 0) {
+              item.Competitors = data.Competitors;
+              if (activeStartListItem === item) {
+                renderStartListModalBody();
+              }
+            }
+          })
+          .catch(() => {});
+      }
+    }
+
+    function closeStartListModal() {
+      document.getElementById('startListModal').classList.add('hidden');
+      activeStartListItem = null;
+    }
+
+    function renderStartListModalBody() {
+      if (!activeStartListItem) return;
+      const item = activeStartListItem;
+      const container = document.getElementById('slListContainer');
+      const countBadge = document.getElementById('slCompetitorCount');
+      const indiaOnly = document.getElementById('slIndiaOnlyToggle').checked;
+      const query = (document.getElementById('slSearchInput').value || '').trim().toLowerCase();
+
+      container.innerHTML = '';
+
+      const comps = item.Competitors || [];
+      const homeMembers = item.Home?.Members || [];
+      const awayMembers = item.Away?.Members || [];
+      const isTeamH2H = item.isH2H || (item.Home?.Name && item.Away?.Name) || homeMembers.length > 0 || awayMembers.length > 0;
+
+      // SCENARIO 1: Individual or Multilateral competitors list
+      if (comps.length > 0) {
+        let filteredComps = comps.filter(c => {
+          const isInd = c.Org === 'IND' || (c.Name && c.Name.toLowerCase().includes('india'));
+          if (indiaOnly && !isInd) return false;
+          if (query) {
+            const matchName = (c.Name || '').toLowerCase().includes(query);
+            const matchOrg = (c.Org || '').toLowerCase().includes(query) || (c.OrgDesc || '').toLowerCase().includes(query);
+            const matchBib = (c.Bib || '').toLowerCase().includes(query);
+            const matchLane = (c.Lane || '').toLowerCase().includes(query);
+            if (!matchName && !matchOrg && !matchBib && !matchLane) return false;
+          }
+          return true;
+        });
+
+        // Sort by start order / lane / rank / bib
+        filteredComps.sort((a, b) => {
+          const ordA = a.StartSortOrder || parseInt(a.Lane) || parseInt(a.StartOrder) || parseInt(a.Bib) || 9999;
+          const ordB = b.StartSortOrder || parseInt(b.Lane) || parseInt(b.StartOrder) || parseInt(b.Bib) || 9999;
+          return ordA - ordB;
+        });
+
+        countBadge.textContent = `${filteredComps.length} / ${comps.length} athletes`;
+
+        if (filteredComps.length === 0) {
+          container.innerHTML = `
+            <div class="py-12 text-center text-slate-400 space-y-2">
+              <span class="text-3xl">🔍</span>
+              <p class="font-bold text-slate-300 text-sm">No matching competitors found</p>
+              <p class="text-xs text-slate-500">Try turning off the India-only filter or clearing the search text.</p>
+            </div>
+          `;
+          return;
+        }
+
+        filteredComps.forEach((c, idx) => {
+          const isInd = c.Org === 'IND' || (c.Name && c.Name.toLowerCase().includes('india'));
+          const flag = getCountryFlag(c.Org);
+          const laneOrPos = c.Lane ? `Lane ${c.Lane}` : (c.StartOrder ? `Pos ${c.StartOrder}` : `#${idx + 1}`);
+
+          let medalBadge = '';
+          if (c.Medal === 'ME_GOLD') medalBadge = '<span class="px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/40 text-[10px] font-extrabold flex items-center gap-1">🥇 GOLD</span>';
+          else if (c.Medal === 'ME_SILVER') medalBadge = '<span class="px-2 py-0.5 rounded bg-slate-300/20 text-slate-200 border border-slate-400/40 text-[10px] font-extrabold flex items-center gap-1">🥈 SILVER</span>';
+          else if (c.Medal === 'ME_BRONZE') medalBadge = '<span class="px-2 py-0.5 rounded bg-amber-700/20 text-amber-400 border border-amber-700/40 text-[10px] font-extrabold flex items-center gap-1">🥉 BRONZE</span>';
+
+          let rankBadge = '';
+          if (c.Rk) {
+            rankBadge = `<span class="px-2 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700 font-mono text-[10px] font-bold">Rank: ${c.Rk}</span>`;
+          }
+
+          let resultBadge = '';
+          if (c.Result) {
+            resultBadge = `<span class="px-2 py-0.5 rounded bg-blue-950/60 text-blue-300 border border-blue-500/30 font-mono text-xs font-bold">${c.Result} ${c.Diff ? `<span class="text-slate-400 text-[10px]">(${c.Diff})</span>` : ''}</span>`;
+          }
+
+          let qBadge = '';
+          if (c.Qualified) {
+            qBadge = `<span class="px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 font-mono text-[10px] font-extrabold" title="Qualified to next round">${c.Qualified}</span>`;
+          }
+
+          const card = document.createElement('div');
+          card.className = `p-3 rounded-xl border flex items-center justify-between gap-3 transition ${
+            isInd
+              ? 'bg-gradient-to-r from-orange-950/40 via-slate-900 to-slate-900 border-orange-500/50 shadow-md ring-1 ring-orange-500/20'
+              : 'bg-slate-900/80 border-slate-800/80 hover:border-slate-700'
+          }`;
+
+          card.innerHTML = `
+            <div class="flex items-center gap-3 min-w-0 flex-1">
+              <!-- Position / Lane Badge -->
+              <div class="w-12 text-center py-1 rounded-lg bg-slate-800/90 border border-slate-700/60 font-mono text-xs font-bold text-slate-300 flex-shrink-0">
+                ${laneOrPos}
+              </div>
+
+              <!-- Flag & Name -->
+              <div class="min-w-0 flex-1">
+                <div class="flex items-center gap-2 flex-wrap">
+                  <span class="text-base">${flag}</span>
+                  <span class="font-extrabold text-sm ${isInd ? 'text-orange-400' : 'text-white'} truncate" title="${c.Name}">
+                    ${c.Name}
+                  </span>
+                  ${isInd ? '<span class="text-[10px] font-bold uppercase px-1.5 py-0.5 rounded bg-orange-500/20 text-orange-400 border border-orange-500/40">IND</span>' : ''}
+                </div>
+                <div class="flex items-center gap-2 text-[11px] text-slate-400 mt-0.5">
+                  <span class="font-medium">${c.OrgDesc || c.Org}</span>
+                  ${c.Bib ? `<span class="font-mono text-slate-500">Bib #${c.Bib}</span>` : ''}
+                  ${c.RecordInd ? `<span class="text-amber-400 font-bold">${c.RecordInd}</span>` : ''}
+                </div>
+              </div>
+            </div>
+
+            <!-- Right details: Result / Medal / Rank / Q -->
+            <div class="flex items-center gap-2 flex-shrink-0">
+              ${qBadge}
+              ${resultBadge}
+              ${medalBadge}
+              ${rankBadge}
+            </div>
+          `;
+          container.appendChild(card);
+        });
+
+        return;
+      }
+
+      // SCENARIO 2: Team Head to Head with Members squads
+      if (isTeamH2H) {
+        const homeInd = item.Home?.Org === 'IND' || (item.Home?.Name || '').toLowerCase().includes('india');
+        const awayInd = item.Away?.Org === 'IND' || (item.Away?.Name || '').toLowerCase().includes('india');
+
+        let totalCount = 0;
+
+        function renderTeamSection(teamName, teamOrg, isInd, members) {
+          if (indiaOnly && !isInd) return '';
+          let filteredMembers = members.filter(m => {
+            if (query) {
+              const matchName = (m.Name || '').toLowerCase().includes(query);
+              const matchBib = (m.Bib || '').toLowerCase().includes(query);
+              const matchPos = (m.PosDesc || m.FuncDesc || '').toLowerCase().includes(query);
+              if (!matchName && !matchBib && !matchPos) return false;
+            }
+            return true;
+          });
+
+          totalCount += filteredMembers.length;
+
+          const flag = getCountryFlag(teamOrg);
+          const membersListHtml = filteredMembers.length > 0 ? filteredMembers.map(m => `
+            <div class="p-2.5 rounded-lg bg-slate-900/90 border border-slate-800/80 flex items-center justify-between text-xs hover:border-slate-700 transition">
+              <div class="flex items-center gap-2 min-w-0">
+                <span class="w-6 h-6 rounded bg-slate-800 text-slate-300 font-mono font-bold text-[11px] flex items-center justify-center flex-shrink-0">
+                  ${m.Bib || '#'}
+                </span>
+                <div class="min-w-0">
+                  <div class="font-bold ${isInd ? 'text-orange-400' : 'text-slate-100'} truncate">${m.Name}</div>
+                  <div class="text-[10px] text-slate-400 font-medium">${m.PosDesc || m.FuncDesc || 'Athlete'}</div>
+                </div>
+              </div>
+              ${m.Starter ? '<span class="text-[10px] font-bold text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded border border-emerald-500/20">Starter</span>' : ''}
+            </div>
+          `).join('') : `
+            <div class="p-3 text-center text-xs text-slate-500 italic bg-slate-900/40 rounded-lg">
+              ${members.length === 0 ? 'Squad lineup not published yet' : 'No matching squad members'}
+            </div>
+          `;
+
+          return `
+            <div class="rounded-xl border ${isInd ? 'border-orange-500/40 bg-orange-950/10' : 'border-slate-800 bg-slate-900/30'} p-3 space-y-2.5">
+              <div class="flex items-center justify-between pb-2 border-b border-slate-800">
+                <div class="flex items-center gap-2">
+                  <span class="text-xl">${flag}</span>
+                  <div>
+                    <h4 class="font-extrabold text-sm ${isInd ? 'text-orange-400' : 'text-white'}">${teamName || teamOrg || 'Team'}</h4>
+                    <span class="text-[11px] text-slate-400 font-mono">${teamOrg || ''}</span>
+                  </div>
+                </div>
+                <span class="text-xs font-mono text-slate-400">${members.length} Squad Members</span>
+              </div>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                ${membersListHtml}
+              </div>
+            </div>
+          `;
+        }
+
+        const homeHtml = renderTeamSection(item.Home?.Name || item.Home?.Org, item.Home?.Org, homeInd, homeMembers);
+        const awayHtml = renderTeamSection(item.Away?.Name || item.Away?.Org, item.Away?.Org, awayInd, awayMembers);
+
+        countBadge.textContent = `${totalCount} athletes`;
+
+        if (!homeHtml && !awayHtml) {
+          container.innerHTML = `
+            <div class="py-12 text-center text-slate-400 space-y-2">
+              <span class="text-3xl">🔍</span>
+              <p class="font-bold text-slate-300 text-sm">No matching team members found</p>
+              <p class="text-xs text-slate-500">Try unchecking India-only or changing the search query.</p>
+            </div>
+          `;
+        } else {
+          container.innerHTML = `
+            <div class="space-y-4">
+              ${homeHtml}
+              ${awayHtml}
+            </div>
+          `;
+        }
+        return;
+      }
+
+      // SCENARIO 3: Event has no competitor details yet
+      countBadge.textContent = 'Pending';
+      const times = formatTime(item.DateTimeRaw);
+      container.innerHTML = `
+        <div class="py-10 px-4 text-center space-y-4 bg-slate-900/40 border border-slate-800/80 rounded-2xl">
+          <div class="w-14 h-14 mx-auto rounded-full bg-blue-500/10 border border-blue-500/30 flex items-center justify-center text-2xl">
+            📋
+          </div>
+          <div class="space-y-1">
+            <h4 class="font-extrabold text-white text-base">Official Start List Pending</h4>
+            <p class="text-xs text-slate-400 max-w-md mx-auto">
+              The Asian Games technical committee has not published the official athlete start list or squad sheet for this unit yet.
+            </p>
+          </div>
+
+          <div class="max-w-md mx-auto bg-slate-900/90 border border-slate-800 rounded-xl p-3.5 text-xs text-left space-y-2">
+            <div class="flex items-center justify-between text-slate-300">
+              <span class="text-slate-400">Sport:</span>
+              <span class="font-bold text-white">${item.DiscDesc || item.Disc}</span>
+            </div>
+            <div class="flex items-center justify-between text-slate-300">
+              <span class="text-slate-400">Event:</span>
+              <span class="font-semibold text-white">${item.EventDesc || 'Main Event'}</span>
+            </div>
+            <div class="flex items-center justify-between text-slate-300">
+              <span class="text-slate-400">Phase / Stage:</span>
+              <span class="font-semibold text-slate-200">${item.PhaseDesc || item.UnitDesc || 'Standard Round'}</span>
+            </div>
+            <div class="flex items-center justify-between text-slate-300">
+              <span class="text-slate-400">Venue:</span>
+              <span class="font-semibold text-blue-400">${item.VenueDesc || item.VenueDescS || 'Venue TBD'}</span>
+            </div>
+            <div class="flex items-center justify-between text-slate-300 pt-1 border-t border-slate-800">
+              <span class="text-slate-400">Scheduled Time:</span>
+              <span class="font-mono font-bold text-orange-400">${times.ist} IST (${times.jst} JST)</span>
+            </div>
+          </div>
+
+          <p class="text-[11px] text-slate-500 italic">
+            💡 Tip: Start lists are updated live as athletes check in or qualify from previous preliminary heats.
+          </p>
+        </div>
+      `;
+    }
+
+    // Modal background click & escape key listeners
+    window.addEventListener('DOMContentLoaded', () => {
+      const slModal = document.getElementById('startListModal');
+      if (slModal) {
+        slModal.addEventListener('click', (e) => {
+          if (e.target.id === 'startListModal') closeStartListModal();
+        });
+      }
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeStartListModal();
+        closeJsonModal();
+        closeMedalsModal();
+      }
+    });
 
     // --- JSON MODAL & EXPORT ---
     function openJsonModal() {
