@@ -29,6 +29,7 @@ def main():
     dates = matrix_data.get("dates", [])
     matrix_rows = matrix_data.get("matrix", [])
     medals = fetch_api("/s/AG2026/en/ALL/medals/org/IND")
+    medal_standings = fetch_api("/s/AG2026/en/ALL/medals/standings")
     config = fetch_api("/s/AG2026/en/config")
 
     import sys
@@ -105,6 +106,7 @@ def main():
     bundle = {
         "schedule": full_schedule_by_date,
         "medals": medals,
+        "medal_standings": medal_standings,
         "config": config
     }
 

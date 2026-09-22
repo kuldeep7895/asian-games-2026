@@ -78,6 +78,20 @@ class AsianGamesHandler(http.server.SimpleHTTPRequestHandler):
                     self.send_json_response(cached_data)
                 else:
                     self.send_json_response({"error": str(e)}, status=502)
+        if parsed.path == "/api/medals/standings":
+            try:
+                data = fetch_upstream("/s/AG2026/en/ALL/medals/standings")
+                self.send_json_response(data)
+            except Exception as e:
+                try:
+                    if os.path.exists(CACHE_FILE):
+                        with open(CACHE_FILE, "r") as f:
+                            cached = json.load(f)
+                        self.send_json_response(cached.get("medal_standings", []))
+                        return
+                except Exception:
+                    pass
+                self.send_json_response({"error": str(e)}, status=502)
             return
 
         if parsed.path == "/api/bundle":

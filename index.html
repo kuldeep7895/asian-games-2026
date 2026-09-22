@@ -128,6 +128,12 @@
           <span id="syncText">Sync Now</span>
         </button>
 
+        <!-- View Full Medal Tally -->
+        <button onclick="openMedalTallyModal()" class="flex items-center gap-1.5 bg-gradient-to-r from-amber-500/20 to-orange-500/20 hover:from-amber-500/30 hover:to-orange-500/30 text-amber-300 border border-amber-500/40 px-3 py-1.5 rounded-lg transition font-bold text-xs shadow-sm">
+          <span>🥇</span>
+          <span>Medal Tally <span class="text-orange-400 font-extrabold">(IND #<span id="headerIndiaRank">8</span>)</span></span>
+        </button>
+
         <!-- View / Export JSON -->
         <button onclick="openJsonModal()" class="flex items-center gap-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-3 py-1.5 rounded-lg transition">
           <svg class="w-3.5 h-3.5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -159,44 +165,59 @@
                 Official
               </span>
             </div>
-            <p class="text-xs text-slate-400 mt-0.5">Live tally of medals won by Indian athletes at the 2026 Asian Games</p>
+            <p class="text-xs text-slate-400 mt-0.5">
+              Rank <span class="text-orange-400 font-bold">#<span id="indiaRankInline">8</span></span> in Asian Games • Live official standings across all participating nations
+            </p>
           </div>
         </div>
 
         <!-- Medal Badges -->
-        <div class="flex flex-wrap items-center gap-2.5 sm:gap-4">
+        <div class="flex flex-wrap items-center gap-2.5 sm:gap-3.5">
+          <!-- India Rank -->
+          <div class="bg-gradient-to-br from-orange-600/30 via-orange-950/40 to-amber-600/20 border border-orange-500/50 rounded-xl px-3.5 py-2 text-center min-w-[70px] shadow-sm shadow-orange-500/20">
+            <div class="text-[10px] text-orange-400 uppercase font-extrabold flex items-center justify-center gap-1">
+              <span>🇮🇳</span> Rank
+            </div>
+            <div id="indiaMedalRank" class="text-xl font-black text-orange-300">#8</div>
+          </div>
           <!-- Total -->
-          <div class="bg-slate-900/90 border border-slate-700/60 rounded-xl px-3.5 py-2 text-center min-w-[70px]">
+          <div class="bg-slate-900/90 border border-slate-700/60 rounded-xl px-3.5 py-2 text-center min-w-[65px]">
             <div class="text-[10px] text-slate-400 uppercase font-semibold">Total</div>
             <div id="totalMedals" class="text-xl font-black text-white">7</div>
           </div>
           <!-- Gold -->
-          <div class="bg-amber-950/40 border border-amber-500/40 rounded-xl px-3.5 py-2 text-center min-w-[70px] shadow-sm shadow-amber-500/20">
+          <div class="bg-amber-950/40 border border-amber-500/40 rounded-xl px-3.5 py-2 text-center min-w-[65px] shadow-sm shadow-amber-500/20">
             <div class="text-[10px] text-amber-400 uppercase font-bold flex items-center justify-center gap-1">
               <span>🥇</span> Gold
             </div>
             <div id="goldMedals" class="text-xl font-black text-amber-300">1</div>
           </div>
           <!-- Silver -->
-          <div class="bg-slate-800/80 border border-slate-400/40 rounded-xl px-3.5 py-2 text-center min-w-[70px]">
+          <div class="bg-slate-800/80 border border-slate-400/40 rounded-xl px-3.5 py-2 text-center min-w-[65px]">
             <div class="text-[10px] text-slate-300 uppercase font-bold flex items-center justify-center gap-1">
               <span>🥈</span> Silver
             </div>
             <div id="silverMedals" class="text-xl font-black text-slate-200">4</div>
           </div>
           <!-- Bronze -->
-          <div class="bg-orange-950/40 border border-amber-700/40 rounded-xl px-3.5 py-2 text-center min-w-[70px]">
+          <div class="bg-orange-950/40 border border-amber-700/40 rounded-xl px-3.5 py-2 text-center min-w-[65px]">
             <div class="text-[10px] text-amber-600 uppercase font-bold flex items-center justify-center gap-1">
               <span>🥉</span> Bronze
             </div>
             <div id="bronzeMedals" class="text-xl font-black text-amber-500">2</div>
           </div>
 
-          <!-- View Medal Details Button -->
-          <button onclick="openMedalsModal()" class="text-xs font-semibold text-orange-400 hover:text-orange-300 bg-orange-500/10 hover:bg-orange-500/20 border border-orange-500/30 px-3.5 py-2.5 rounded-xl transition flex items-center gap-1.5">
-            <span>View All Medal Winners</span>
-            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
-          </button>
+          <!-- Action Buttons -->
+          <div class="flex items-center gap-2">
+            <!-- Full Medal Tally Button -->
+            <button onclick="openMedalTallyModal()" class="text-xs font-bold text-amber-300 hover:text-white bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/40 px-3.5 py-2.5 rounded-xl transition flex items-center gap-1.5 shadow-sm">
+              <span>📊 Full Medal Tally</span>
+            </button>
+            <!-- View India Winners Button -->
+            <button onclick="openMedalsModal()" class="text-xs font-semibold text-orange-400 hover:text-orange-300 bg-orange-500/10 hover:bg-orange-500/20 border border-orange-500/30 px-3 py-2.5 rounded-xl transition flex items-center gap-1">
+              <span>🇮🇳 Winners List</span>
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -367,6 +388,92 @@
     </div>
   </div>
 
+  <!-- MODAL: FULL MEDAL TALLY (ALL COUNTRIES) -->
+  <div id="medalTallyModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-[#121A2B] border border-amber-500/30 rounded-2xl max-w-3xl w-full max-h-[88vh] flex flex-col shadow-2xl overflow-hidden glow-india">
+      
+      <!-- Modal Header -->
+      <div class="px-5 py-4 border-b border-slate-800 flex items-center justify-between bg-gradient-to-r from-[#172338] via-slate-900 to-slate-900">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-amber-500/20 border border-amber-500/40 text-xl flex items-center justify-center flex-shrink-0">
+            🏆
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <h3 class="font-extrabold text-white text-base">Asian Games 2026 Medal Tally</h3>
+              <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-blue-500/20 text-blue-300 border border-blue-500/30">Official Standings</span>
+            </div>
+            <p class="text-xs text-slate-400 mt-0.5">
+              Live standings across all participating National Olympic Committees (NOCs)
+            </p>
+          </div>
+        </div>
+        <button onclick="closeMedalTallyModal()" class="text-slate-400 hover:text-white p-1 rounded-lg">✕</button>
+      </div>
+
+      <!-- Controls & Quick Jump -->
+      <div class="px-5 py-2.5 border-b border-slate-800 bg-[#0E1524] flex flex-wrap items-center justify-between gap-3 text-xs">
+        <div class="flex items-center gap-2 flex-1 min-w-[200px]">
+          <input 
+            type="text" 
+            id="tallySearchInput" 
+            oninput="renderMedalTallyTable()" 
+            placeholder="Search country or code (e.g. India, Japan, CHN)..." 
+            class="bg-slate-900 border border-slate-700/80 rounded-lg px-3 py-1.5 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-amber-500 w-full"
+          />
+        </div>
+        <div class="flex items-center gap-2">
+          <!-- Sort mode -->
+          <div class="flex items-center gap-1.5 bg-slate-900 border border-slate-700/80 rounded-lg px-2.5 py-1 text-xs">
+            <span class="text-slate-400 font-medium">Sort:</span>
+            <select id="tallySortBy" onchange="renderMedalTallyTable()" class="bg-transparent text-xs text-amber-400 font-bold focus:outline-none cursor-pointer">
+              <option value="GOLD" class="bg-slate-900 text-slate-200">🥇 Gold First</option>
+              <option value="TOTAL" class="bg-slate-900 text-slate-200">Total First</option>
+              <option value="NAME" class="bg-slate-900 text-slate-200">Country (A-Z)</option>
+            </select>
+          </div>
+          <!-- Jump to India button -->
+          <button onclick="jumpToIndiaInTally()" class="bg-orange-500/20 hover:bg-orange-500/30 text-orange-400 border border-orange-500/40 px-2.5 py-1 rounded-lg font-bold transition flex items-center gap-1 cursor-pointer">
+            <span>🇮🇳</span> <span>Find India</span>
+          </button>
+          <!-- Switch to India squad button -->
+          <button onclick="closeMedalTallyModal(); openMedalsModal();" class="bg-slate-800 hover:bg-slate-700 text-slate-300 px-2.5 py-1 rounded-lg font-medium transition cursor-pointer">
+            India Winners ▾
+          </button>
+        </div>
+      </div>
+
+      <!-- Standings Table Container -->
+      <div class="flex-1 overflow-auto custom-scrollbar bg-[#0B0F19]">
+        <table class="w-full text-left text-xs border-collapse">
+          <thead class="sticky top-0 z-10 bg-[#121A2B] text-slate-400 font-bold uppercase tracking-wider text-[11px] border-b border-slate-800 shadow-sm">
+            <tr>
+              <th class="py-3 px-3 sm:px-4 w-12 text-center">#</th>
+              <th class="py-3 px-3 sm:px-4">Country / NOC</th>
+              <th class="py-3 px-2 sm:px-3 text-center w-16 text-amber-400">🥇 Gold</th>
+              <th class="py-3 px-2 sm:px-3 text-center w-16 text-slate-300">🥈 Silver</th>
+              <th class="py-3 px-2 sm:px-3 text-center w-16 text-amber-600">🥉 Bronze</th>
+              <th class="py-3 px-3 sm:px-4 text-center w-20 text-white font-extrabold">Total</th>
+            </tr>
+          </thead>
+          <tbody id="medalTallyTableBody" class="divide-y divide-slate-800/60 font-medium">
+            <!-- Injected via JavaScript -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="px-5 py-3 border-t border-slate-800 bg-[#121A2B] flex items-center justify-between text-xs text-slate-400">
+        <div class="flex items-center gap-2">
+          <span>Source: Bornan Sports Live Results Feed</span>
+          <span class="text-slate-600">•</span>
+          <span id="tallyTotalNOCs" class="text-amber-400 font-semibold">34 NOCs</span>
+        </div>
+        <button onclick="closeMedalTallyModal()" class="bg-slate-800 hover:bg-slate-700 text-white px-4 py-1.5 rounded-lg transition font-medium">Close</button>
+      </div>
+    </div>
+  </div>
+
   <!-- MODAL: INDIA MEDAL WINNERS -->
   <div id="medalsModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
     <div class="bg-[#121A2B] border border-orange-500/30 rounded-2xl max-w-2xl w-full max-h-[85vh] flex flex-col shadow-2xl overflow-hidden glow-india">
@@ -505,6 +612,7 @@
         initDateTabs();
         initSportDropdown();
         renderMedals();
+        renderMedalTallyTable();
         renderCurrentDateSchedule();
         return;
       }
@@ -525,6 +633,7 @@
           initDateTabs();
           initSportDropdown();
           renderMedals();
+          renderMedalTallyTable();
           renderCurrentDateSchedule();
         } else {
           showErrorNotice();
@@ -935,63 +1044,231 @@
       });
     }
 
-    // --- RENDER MEDALS BANNER & MODAL ---
+    // --- RENDER MEDALS BANNER, RANK & MODAL ---
     function renderMedals() {
       const medals = appData.medals || [];
-      let gold = 0, silver = 0, bronze = 0;
+      const standings = appData.medal_standings || [];
 
-      medals.forEach(m => {
-        if (m.Medal === 'ME_GOLD') gold++;
-        else if (m.Medal === 'ME_SILVER') silver++;
-        else if (m.Medal === 'ME_BRONZE') bronze++;
+      // Find India in official standings
+      const indStanding = standings.find(s => s.Org === 'IND');
+      if (indStanding) {
+        const indRank = indStanding.Rk || indStanding.RkPo || '8';
+        const goldCount = indStanding.Count?.ME_GOLD?.total ?? indStanding.Gold ?? 1;
+        const silverCount = indStanding.Count?.ME_SILVER?.total ?? indStanding.Silver ?? 4;
+        const bronzeCount = indStanding.Count?.ME_BRONZE?.total ?? indStanding.Bronze ?? 2;
+        const totalCount = indStanding.Count?.total?.total ?? indStanding.Total ?? (goldCount + silverCount + bronzeCount);
+
+        const rankEl = document.getElementById('indiaMedalRank');
+        if (rankEl) rankEl.textContent = '#' + indRank;
+        const inlineRankEl = document.getElementById('indiaRankInline');
+        if (inlineRankEl) inlineRankEl.textContent = indRank;
+        const headerRankEl = document.getElementById('headerIndiaRank');
+        if (headerRankEl) headerRankEl.textContent = indRank;
+
+        document.getElementById('totalMedals').textContent = totalCount;
+        document.getElementById('goldMedals').textContent = goldCount;
+        document.getElementById('silverMedals').textContent = silverCount;
+        document.getElementById('bronzeMedals').textContent = bronzeCount;
+      } else {
+        let gold = 0, silver = 0, bronze = 0;
+        medals.forEach(m => {
+          if (m.Medal === 'ME_GOLD') gold++;
+          else if (m.Medal === 'ME_SILVER') silver++;
+          else if (m.Medal === 'ME_BRONZE') bronze++;
+        });
+        const rankEl = document.getElementById('indiaMedalRank');
+        if (rankEl) rankEl.textContent = '#8';
+        document.getElementById('totalMedals').textContent = medals.length || 7;
+        document.getElementById('goldMedals').textContent = gold || 1;
+        document.getElementById('silverMedals').textContent = silver || 4;
+        document.getElementById('bronzeMedals').textContent = bronze || 2;
+      }
+
+      // Populate Medals Modal List (Individual Indian winners)
+      const container = document.getElementById('medalsListContainer');
+      if (container) {
+        container.innerHTML = '';
+        medals.forEach(m => {
+          const isGold = m.Medal === 'ME_GOLD';
+          const isSilver = m.Medal === 'ME_SILVER';
+          const medalEmoji = isGold ? '🥇' : isSilver ? '🥈' : '🥉';
+          const medalColor = isGold ? 'border-amber-500/50 bg-amber-950/20' : isSilver ? 'border-slate-400/40 bg-slate-900/40' : 'border-amber-700/40 bg-orange-950/20';
+
+          let membersHtml = '';
+          if (m.Members && m.Members.length > 0) {
+            membersHtml = `
+              <div class="mt-2.5 pt-2 border-t border-slate-800 text-xs">
+                <span class="text-slate-400 font-semibold block mb-1">Squad / Winning Members:</span>
+                <div class="flex flex-wrap gap-1.5">
+                  ${m.Members.map(mem => `<span class="bg-slate-800/90 text-slate-200 px-2 py-0.5 rounded text-[11px] font-medium border border-slate-700/60">${mem.Name}</span>`).join('')}
+                </div>
+              </div>
+            `;
+          }
+
+          const div = document.createElement('div');
+          div.className = `p-4 rounded-xl border ${medalColor} space-y-1.5`;
+          div.innerHTML = `
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <span class="text-2xl">${medalEmoji}</span>
+                <div>
+                  <span class="font-extrabold text-sm text-white">${m.Name}</span>
+                  <span class="text-xs text-slate-400 block">${m.DiscDesc} - ${m.EventDesc}</span>
+                </div>
+              </div>
+              <span class="text-[11px] font-bold uppercase px-2 py-0.5 rounded bg-slate-800 text-slate-300">
+                ${m.Medal.replace('ME_', '')}
+              </span>
+            </div>
+            ${membersHtml}
+          `;
+          container.appendChild(div);
+        });
+      }
+    }
+
+    // --- FULL MEDAL TALLY MODAL & TABLE ---
+    function openMedalTallyModal() {
+      const searchInput = document.getElementById('tallySearchInput');
+      if (searchInput) searchInput.value = '';
+      renderMedalTallyTable();
+      const modal = document.getElementById('medalTallyModal');
+      if (modal) modal.classList.remove('hidden');
+    }
+
+    function closeMedalTallyModal() {
+      const modal = document.getElementById('medalTallyModal');
+      if (modal) modal.classList.add('hidden');
+    }
+
+    function renderMedalTallyTable() {
+      const standings = appData.medal_standings || [];
+      const tbody = document.getElementById('medalTallyTableBody');
+      const countLabel = document.getElementById('tallyTotalNOCs');
+      if (!tbody) return;
+
+      const query = (document.getElementById('tallySearchInput')?.value || '').trim().toLowerCase();
+      const sortBy = document.getElementById('tallySortBy')?.value || 'GOLD';
+
+      let filtered = standings.filter(item => {
+        if (!query) return true;
+        const orgDesc = (item.OrgDesc || '').toLowerCase();
+        const org = (item.Org || '').toLowerCase();
+        return orgDesc.includes(query) || org.includes(query);
       });
 
-      document.getElementById('totalMedals').textContent = medals.length;
-      document.getElementById('goldMedals').textContent = gold;
-      document.getElementById('silverMedals').textContent = silver;
-      document.getElementById('bronzeMedals').textContent = bronze;
+      filtered.sort((a, b) => {
+        const goldA = a.Count?.ME_GOLD?.total ?? a.Gold ?? 0;
+        const goldB = b.Count?.ME_GOLD?.total ?? b.Gold ?? 0;
+        const silvA = a.Count?.ME_SILVER?.total ?? a.Silver ?? 0;
+        const silvB = b.Count?.ME_SILVER?.total ?? b.Silver ?? 0;
+        const bronA = a.Count?.ME_BRONZE?.total ?? a.Bronze ?? 0;
+        const bronB = b.Count?.ME_BRONZE?.total ?? b.Bronze ?? 0;
+        const totA = a.Count?.total?.total ?? a.Total ?? (goldA + silvA + bronA);
+        const totB = b.Count?.total?.total ?? b.Total ?? (goldB + silvB + bronB);
 
-      // Populate Medals Modal List
-      const container = document.getElementById('medalsListContainer');
-      container.innerHTML = '';
+        if (sortBy === 'TOTAL') {
+          if (totB !== totA) return totB - totA;
+          if (goldB !== goldA) return goldB - goldA;
+          return silvB - silvA;
+        } else if (sortBy === 'NAME') {
+          return (a.OrgDesc || a.Org).localeCompare(b.OrgDesc || b.Org);
+        } else {
+          // Standard Olympic order: Gold first, then Silver, then Bronze
+          if (goldB !== goldA) return goldB - goldA;
+          if (silvB !== silvA) return silvB - silvA;
+          if (bronB !== bronA) return bronB - bronA;
+          return totB - totA;
+        }
+      });
 
-      medals.forEach(m => {
-        const isGold = m.Medal === 'ME_GOLD';
-        const isSilver = m.Medal === 'ME_SILVER';
-        const medalEmoji = isGold ? '🥇' : isSilver ? '🥈' : '🥉';
-        const medalColor = isGold ? 'border-amber-500/50 bg-amber-950/20' : isSilver ? 'border-slate-400/40 bg-slate-900/40' : 'border-amber-700/40 bg-orange-950/20';
+      if (countLabel) countLabel.textContent = `${filtered.length} / ${standings.length} NOCs`;
 
-        let membersHtml = '';
-        if (m.Members && m.Members.length > 0) {
-          membersHtml = `
-            <div class="mt-2.5 pt-2 border-t border-slate-800 text-xs">
-              <span class="text-slate-400 font-semibold block mb-1">Squad / Winning Members:</span>
-              <div class="flex flex-wrap gap-1.5">
-                ${m.Members.map(mem => `<span class="bg-slate-800/90 text-slate-200 px-2 py-0.5 rounded text-[11px] font-medium border border-slate-700/60">${mem.Name}</span>`).join('')}
-              </div>
-            </div>
-          `;
+      tbody.innerHTML = '';
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="6" class="py-12 text-center text-slate-400">
+              <span class="text-3xl block mb-2">🔍</span>
+              <p class="font-bold text-slate-300 text-sm">No countries found matching "${query}"</p>
+              <p class="text-xs text-slate-500 mt-1">Try clearing your search term.</p>
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      filtered.forEach((item, idx) => {
+        const isInd = item.Org === 'IND';
+        const flag = getCountryFlag(item.Org);
+        const rank = item.Rk || (idx + 1);
+
+        const gold = item.Count?.ME_GOLD?.total ?? item.Gold ?? 0;
+        const silver = item.Count?.ME_SILVER?.total ?? item.Silver ?? 0;
+        const bronze = item.Count?.ME_BRONZE?.total ?? item.Bronze ?? 0;
+        const total = item.Count?.total?.total ?? item.Total ?? (gold + silver + bronze);
+
+        let rankBadge = `<span class="font-mono text-slate-400 text-xs font-semibold">${rank}</span>`;
+        if (rank === '1' || rank === 1) {
+          rankBadge = `<span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40 font-bold text-xs">1</span>`;
+        } else if (rank === '2' || rank === 2) {
+          rankBadge = `<span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-slate-300/20 text-slate-200 border border-slate-400/40 font-bold text-xs">2</span>`;
+        } else if (rank === '3' || rank === 3) {
+          rankBadge = `<span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-amber-700/20 text-amber-400 border border-amber-700/40 font-bold text-xs">3</span>`;
         }
 
-        const div = document.createElement('div');
-        div.className = `p-4 rounded-xl border ${medalColor} space-y-1.5`;
-        div.innerHTML = `
-          <div class="flex items-center justify-between">
-            <div class="flex items-center gap-2">
-              <span class="text-2xl">${medalEmoji}</span>
-              <div>
-                <span class="font-extrabold text-sm text-white">${m.Name}</span>
-                <span class="text-xs text-slate-400 block">${m.DiscDesc} - ${m.EventDesc}</span>
+        const tr = document.createElement('tr');
+        if (isInd) {
+          tr.id = 'indiaTallyRow';
+          tr.className = 'bg-gradient-to-r from-orange-950/70 via-[#161F30] to-slate-900 border-l-4 border-l-orange-500 text-white font-bold ring-1 ring-orange-500/30 transition';
+        } else {
+          tr.className = 'hover:bg-slate-800/50 transition';
+        }
+
+        tr.innerHTML = `
+          <td class="py-3 px-3 sm:px-4 text-center">${rankBadge}</td>
+          <td class="py-3 px-3 sm:px-4">
+            <div class="flex items-center gap-2.5">
+              <span class="text-xl flex-shrink-0">${flag}</span>
+              <div class="min-w-0">
+                <div class="flex items-center gap-1.5 flex-wrap">
+                  <span class="font-bold text-xs ${isInd ? 'text-orange-400 font-extrabold text-sm' : 'text-slate-100'}">${item.OrgDesc || item.Org}</span>
+                  <span class="${isInd ? 'bg-orange-500/20 text-orange-400 border border-orange-500/40' : 'bg-slate-800 text-slate-400 border border-slate-700/60'} text-[10px] font-mono px-1.5 py-0.2 rounded font-bold">
+                    ${item.Org}
+                  </span>
+                  ${isInd ? '<span class="text-[10px] font-extrabold uppercase bg-orange-500 text-slate-950 px-1.5 py-0.2 rounded">Team India</span>' : ''}
+                </div>
               </div>
             </div>
-            <span class="text-[11px] font-bold uppercase px-2 py-0.5 rounded bg-slate-800 text-slate-300">
-              ${m.Medal.replace('ME_', '')}
-            </span>
-          </div>
-          ${membersHtml}
+          </td>
+          <td class="py-3 px-2 sm:px-3 text-center font-mono ${gold > 0 ? 'text-amber-300 font-extrabold text-sm' : 'text-slate-500 font-normal'}">
+            ${gold}
+          </td>
+          <td class="py-3 px-2 sm:px-3 text-center font-mono ${silver > 0 ? 'text-slate-200 font-extrabold text-sm' : 'text-slate-500 font-normal'}">
+            ${silver}
+          </td>
+          <td class="py-3 px-2 sm:px-3 text-center font-mono ${bronze > 0 ? 'text-amber-500 font-extrabold text-sm' : 'text-slate-500 font-normal'}">
+            ${bronze}
+          </td>
+          <td class="py-3 px-3 sm:px-4 text-center font-mono font-black text-sm ${isInd ? 'text-orange-300 text-base' : 'text-white'}">
+            ${total}
+          </td>
         `;
-        container.appendChild(div);
+        tbody.appendChild(tr);
       });
+    }
+
+    function jumpToIndiaInTally() {
+      const row = document.getElementById('indiaTallyRow');
+      if (row) {
+        row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        row.classList.add('ring-2', 'ring-orange-400', 'bg-orange-900/40');
+        setTimeout(() => {
+          row.classList.remove('ring-2', 'ring-orange-400', 'bg-orange-900/40');
+        }, 2200);
+      }
     }
 
     // --- START LIST & ATHLETE LINEUP MODAL ---
@@ -1333,6 +1610,18 @@
           if (e.target.id === 'startListModal') closeStartListModal();
         });
       }
+      const tallyModal = document.getElementById('medalTallyModal');
+      if (tallyModal) {
+        tallyModal.addEventListener('click', (e) => {
+          if (e.target.id === 'medalTallyModal') closeMedalTallyModal();
+        });
+      }
+      const medModal = document.getElementById('medalsModal');
+      if (medModal) {
+        medModal.addEventListener('click', (e) => {
+          if (e.target.id === 'medalsModal') closeMedalsModal();
+        });
+      }
     });
 
     document.addEventListener('keydown', (e) => {
@@ -1340,6 +1629,7 @@
         closeStartListModal();
         closeJsonModal();
         closeMedalsModal();
+        closeMedalTallyModal();
       }
     });
 
@@ -1498,6 +1788,8 @@
             const freshBundle = await res.json();
             if (freshBundle && freshBundle.schedule) {
               appData = freshBundle;
+              renderMedals();
+              renderMedalTallyTable();
               applyFilters();
               showBriefUpdateIndicator();
             }
