@@ -1,0 +1,1103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Asian Games 2026 Schedule & Results | India Contingent Tracker</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              orange: '#FF671F',
+              white: '#FFFFFF',
+              green: '#046A38',
+              blue: '#06038D',
+              dark: '#0B0F19',
+              card: '#161F30',
+              border: '#222F46'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    code, pre {
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      height: 6px;
+      width: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: #0B0F19;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #2A3B5C;
+      border-radius: 9999px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: #3B82F6;
+    }
+    .glass-panel {
+      background: rgba(22, 31, 48, 0.75);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .glow-india {
+      box-shadow: 0 0 20px -3px rgba(255, 103, 31, 0.25);
+    }
+    .pulse-live {
+      animation: pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(1.15); }
+    }
+  </style>
+  <!-- Direct file opening fallback data -->
+  <script src="./asian_games_data.js"></script>
+</head>
+<body class="bg-[#0B0F19] text-slate-100 min-h-screen selection:bg-brand-orange selection:text-white custom-scrollbar pb-24">
+
+  <!-- TOP HEADER -->
+  <header class="sticky top-0 z-50 glass-panel border-b border-slate-800/80 px-4 lg:px-8 py-3.5 transition-all">
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-3">
+      
+      <!-- Logo & Title -->
+      <div class="flex items-center gap-3.5">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-[#FF671F] via-white to-[#046A38] p-[2px] shadow-lg shadow-orange-500/10 flex-shrink-0">
+          <div class="w-full h-full bg-[#0E1524] rounded-[10px] flex items-center justify-center font-black text-lg text-white">
+            🇮🇳
+          </div>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 class="font-extrabold text-base sm:text-lg tracking-tight bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent">
+              Asian Games 2026 Schedule
+            </h1>
+            <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-400 border border-blue-500/30">
+              Aichi-Nagoya
+            </span>
+          </div>
+          <p class="text-xs text-slate-400">Official Bornan Results & Match Timings (IST & JST)</p>
+        </div>
+      </div>
+
+      <!-- Live Clock & Quick Actions -->
+      <div class="flex flex-wrap items-center gap-2.5 sm:gap-3 text-xs">
+        <!-- Dual Clocks -->
+        <div class="flex items-center gap-3 bg-slate-900/90 border border-slate-800 rounded-lg px-3 py-1.5 font-medium text-slate-300">
+          <div class="flex items-center gap-1.5">
+            <span class="text-orange-400 font-semibold">IST:</span>
+            <span id="istClock" class="font-mono text-slate-100 font-bold">--:--:--</span>
+          </div>
+          <span class="text-slate-600">|</span>
+          <div class="flex items-center gap-1.5">
+            <span class="text-emerald-400 font-semibold">JST:</span>
+            <span id="jstClock" class="font-mono text-slate-100">--:--:--</span>
+          </div>
+        </div>
+
+        <!-- Live 30s Auto-Sync Toggle -->
+        <div class="flex items-center gap-2 bg-slate-900/90 border border-emerald-500/30 rounded-lg px-2.5 py-1.5 text-xs select-none">
+          <label class="flex items-center gap-1.5 cursor-pointer">
+            <span id="autoSyncDot" class="w-2 h-2 rounded-full bg-emerald-400 pulse-live"></span>
+            <span class="text-[11px] font-bold text-slate-200">Live 30s</span>
+            <input type="checkbox" id="autoSyncToggle" checked onchange="toggleAutoSync()" class="sr-only peer" />
+            <div class="w-7 h-3.5 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-3.5 peer-checked:after:border-white after:content-[''] after:absolute after:top-[1px] after:left-[1px] after:bg-white after:rounded-full after:h-3 after:w-3 after:transition-all peer-checked:bg-emerald-500 relative cursor-pointer"></div>
+          </label>
+          <span id="autoSyncCountdown" class="font-mono text-[10px] text-emerald-400 font-bold w-6 text-center">30s</span>
+        </div>
+
+        <!-- Live Sync Button -->
+        <button id="syncBtn" onclick="syncLiveData()" class="flex items-center gap-1.5 bg-blue-600 hover:bg-blue-500 active:scale-95 text-white font-medium px-3 py-1.5 rounded-lg transition shadow-md shadow-blue-600/20">
+          <svg id="syncIcon" class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+          </svg>
+          <span id="syncText">Sync Now</span>
+        </button>
+
+        <!-- View / Export JSON -->
+        <button onclick="openJsonModal()" class="flex items-center gap-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-3 py-1.5 rounded-lg transition">
+          <svg class="w-3.5 h-3.5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+          </svg>
+          <span>Get JSON</span>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- MAIN CONTAINER -->
+  <main class="max-w-7xl mx-auto px-4 lg:px-8 mt-5 space-y-6">
+
+    <!-- INDIA MEDAL TALLY HIGHLIGHT BANNER -->
+    <div class="glass-panel rounded-2xl p-4 sm:p-5 relative overflow-hidden glow-india border border-orange-500/20">
+      <div class="absolute -right-10 -bottom-10 w-44 h-44 bg-orange-500/10 rounded-full blur-3xl pointer-events-none"></div>
+      
+      <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+        <div class="flex items-center gap-3.5">
+          <div class="w-12 h-12 rounded-xl bg-gradient-to-tr from-amber-500/20 to-orange-500/30 border border-amber-500/30 flex items-center justify-center text-2xl flex-shrink-0">
+            🏆
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <h2 class="text-base sm:text-lg font-bold text-white tracking-tight">Team India Medal Standings</h2>
+              <span class="bg-orange-500/20 text-orange-400 text-[10px] font-extrabold uppercase px-2 py-0.5 rounded tracking-wider border border-orange-500/30">
+                Official
+              </span>
+            </div>
+            <p class="text-xs text-slate-400 mt-0.5">Live tally of medals won by Indian athletes at the 2026 Asian Games</p>
+          </div>
+        </div>
+
+        <!-- Medal Badges -->
+        <div class="flex flex-wrap items-center gap-2.5 sm:gap-4">
+          <!-- Total -->
+          <div class="bg-slate-900/90 border border-slate-700/60 rounded-xl px-3.5 py-2 text-center min-w-[70px]">
+            <div class="text-[10px] text-slate-400 uppercase font-semibold">Total</div>
+            <div id="totalMedals" class="text-xl font-black text-white">7</div>
+          </div>
+          <!-- Gold -->
+          <div class="bg-amber-950/40 border border-amber-500/40 rounded-xl px-3.5 py-2 text-center min-w-[70px] shadow-sm shadow-amber-500/20">
+            <div class="text-[10px] text-amber-400 uppercase font-bold flex items-center justify-center gap-1">
+              <span>🥇</span> Gold
+            </div>
+            <div id="goldMedals" class="text-xl font-black text-amber-300">1</div>
+          </div>
+          <!-- Silver -->
+          <div class="bg-slate-800/80 border border-slate-400/40 rounded-xl px-3.5 py-2 text-center min-w-[70px]">
+            <div class="text-[10px] text-slate-300 uppercase font-bold flex items-center justify-center gap-1">
+              <span>🥈</span> Silver
+            </div>
+            <div id="silverMedals" class="text-xl font-black text-slate-200">4</div>
+          </div>
+          <!-- Bronze -->
+          <div class="bg-orange-950/40 border border-amber-700/40 rounded-xl px-3.5 py-2 text-center min-w-[70px]">
+            <div class="text-[10px] text-amber-600 uppercase font-bold flex items-center justify-center gap-1">
+              <span>🥉</span> Bronze
+            </div>
+            <div id="bronzeMedals" class="text-xl font-black text-amber-500">2</div>
+          </div>
+
+          <!-- View Medal Details Button -->
+          <button onclick="openMedalsModal()" class="text-xs font-semibold text-orange-400 hover:text-orange-300 bg-orange-500/10 hover:bg-orange-500/20 border border-orange-500/30 px-3.5 py-2.5 rounded-xl transition flex items-center gap-1.5">
+            <span>View All Medal Winners</span>
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- DATE NAVIGATION TABS -->
+    <div class="space-y-2">
+      <div class="flex items-center justify-between text-xs text-slate-400 font-medium px-1">
+        <span>Select Competition Day</span>
+        <span id="dateEventCount" class="text-blue-400 font-semibold">Loading events...</span>
+      </div>
+
+      <div class="flex items-center gap-2 overflow-x-auto custom-scrollbar pb-2 pt-1" id="dateTabsContainer">
+        <!-- Date tabs injected dynamically -->
+      </div>
+    </div>
+
+    <!-- CONTROLS & FILTER BAR -->
+    <div class="glass-panel rounded-xl p-3.5 sm:p-4 space-y-3.5">
+      <div class="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
+
+        <!-- Search Bar -->
+        <div class="relative flex-1">
+          <svg class="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+          </svg>
+          <input 
+            type="text" 
+            id="searchInput" 
+            oninput="applyFilters()" 
+            placeholder="Search sport, athlete, opponent (e.g., Hockey, Cricket, Mandhana, MAS, Tennis)..." 
+            class="w-full bg-slate-900/90 border border-slate-700/80 rounded-lg pl-10 pr-4 py-2 text-xs text-slate-100 placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition"
+          />
+        </div>
+
+        <!-- Quick Toggles -->
+        <div class="flex flex-wrap items-center gap-2 sm:gap-3">
+          
+          <!-- India Only Toggle (Primary Feature) -->
+          <label class="flex items-center gap-2 cursor-pointer bg-gradient-to-r from-orange-950/60 to-slate-900 border border-orange-500/40 rounded-lg px-3 py-1.5 select-none hover:border-orange-500 transition">
+            <input type="checkbox" id="indiaOnlyToggle" checked onchange="applyFilters()" class="w-4 h-4 rounded text-orange-500 focus:ring-orange-500 bg-slate-800 border-slate-700 accent-orange-500 cursor-pointer" />
+            <span class="text-xs font-bold text-orange-400 flex items-center gap-1.5">
+              <span>🇮🇳</span> India Team Only
+            </span>
+          </label>
+
+          <!-- Medal Events Only -->
+          <label class="flex items-center gap-2 cursor-pointer bg-slate-900 border border-slate-700/80 rounded-lg px-3 py-1.5 select-none hover:border-slate-600 transition">
+            <input type="checkbox" id="medalOnlyToggle" onchange="applyFilters()" class="w-4 h-4 rounded text-amber-500 focus:ring-amber-500 bg-slate-800 border-slate-700 accent-amber-500 cursor-pointer" />
+            <span class="text-xs font-semibold text-amber-400 flex items-center gap-1">
+              <span>🥇</span> Medal Rounds
+            </span>
+          </label>
+
+          <!-- Sport Dropdown -->
+          <select id="sportFilter" onchange="applyFilters()" class="bg-slate-900 border border-slate-700/80 rounded-lg px-3 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-blue-500 cursor-pointer font-medium">
+            <option value="ALL">All Sports</option>
+          </select>
+
+          <!-- Status Dropdown -->
+          <select id="statusFilter" onchange="applyFilters()" class="bg-slate-900 border border-slate-700/80 rounded-lg px-3 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-blue-500 cursor-pointer font-medium">
+            <option value="ALL">All Status</option>
+            <option value="LIVE">Live Now</option>
+            <option value="SCHEDULED">Upcoming / Scheduled</option>
+            <option value="FINISHED">Completed</option>
+          </select>
+
+          <!-- Sort Order Dropdown -->
+          <div class="flex items-center gap-1.5 bg-slate-900 border border-slate-700/80 rounded-lg px-2.5 py-1.5 text-xs">
+            <span class="text-slate-400 font-medium">Sort:</span>
+            <select id="sortBy" onchange="applyFilters()" class="bg-transparent text-xs text-blue-400 font-bold focus:outline-none cursor-pointer">
+              <option value="TIME_ASC" class="bg-slate-900 text-slate-200">🕒 Time: Earliest First</option>
+              <option value="TIME_DESC" class="bg-slate-900 text-slate-200">🕒 Time: Latest First</option>
+              <option value="DISC" class="bg-slate-900 text-slate-200">🏅 By Sport</option>
+              <option value="MEDAL" class="bg-slate-900 text-slate-200">🥇 Medal Rounds First</option>
+            </select>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- Active Filters Pill Display -->
+      <div id="filterPills" class="flex flex-wrap items-center gap-2 text-xs text-slate-400 pt-1 border-t border-slate-800/80">
+        <span class="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Active:</span>
+        <span id="activeStatusSummary" class="text-slate-300 font-medium">Showing India matches on selected date</span>
+      </div>
+    </div>
+
+    <!-- SCHEDULE LIST SECTION -->
+    <div class="space-y-4">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <h3 class="text-base font-bold text-white tracking-tight" id="sectionHeading">
+            Scheduled Matches & Events
+          </h3>
+          <span id="matchCountBadge" class="bg-blue-500/20 text-blue-400 text-xs font-bold px-2.5 py-0.5 rounded-full border border-blue-500/30">
+            0 matches
+          </span>
+        </div>
+
+        <button onclick="downloadCurrentJson()" class="text-xs text-slate-400 hover:text-white flex items-center gap-1 hover:underline">
+          <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+          <span>Download Filtered JSON</span>
+        </button>
+      </div>
+
+      <!-- MATCH CARDS GRID / LIST -->
+      <div id="scheduleGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <!-- Injected via JavaScript -->
+      </div>
+
+      <!-- EMPTY STATE -->
+      <div id="emptyState" class="hidden glass-panel rounded-2xl p-12 text-center space-y-3">
+        <div class="text-4xl">🗓️</div>
+        <h4 class="text-base font-bold text-white">No matches found for the selected criteria</h4>
+        <p class="text-xs text-slate-400 max-w-md mx-auto">
+          Try turning off the "India Team Only" filter, choosing a different date (e.g. Sep 20, Sep 22, Sep 23), or clearing your search term.
+        </p>
+        <button onclick="resetFilters()" class="text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 px-4 py-2 rounded-lg transition mt-2">
+          Reset Filters
+        </button>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- MODAL: JSON VIEWER & EXPORTER -->
+  <div id="jsonModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-[#121A2B] border border-slate-700/80 rounded-2xl max-w-3xl w-full max-h-[85vh] flex flex-col shadow-2xl overflow-hidden">
+      
+      <!-- Modal Header -->
+      <div class="px-5 py-4 border-b border-slate-800 flex items-center justify-between">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-lg bg-amber-500/10 text-amber-400 flex items-center justify-center font-mono font-bold text-sm">
+            {}
+          </div>
+          <div>
+            <h3 class="font-bold text-white text-sm">Official Asian Games JSON Feed</h3>
+            <p class="text-[11px] text-slate-400">Clean decompressed JSON directly from Bornan API</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <button onclick="copyJsonToClipboard()" id="copyJsonBtn" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-1.5 rounded-lg border border-slate-700 flex items-center gap-1.5 transition">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+            <span id="copyJsonText">Copy JSON</span>
+          </button>
+          <button onclick="downloadCurrentJson()" class="text-xs bg-blue-600 hover:bg-blue-500 text-white px-3 py-1.5 rounded-lg transition font-medium">
+            Download File
+          </button>
+          <button onclick="closeJsonModal()" class="text-slate-400 hover:text-white p-1 rounded-lg">
+            ✕
+          </button>
+        </div>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="p-4 flex-1 overflow-auto custom-scrollbar bg-[#0B0F19]">
+        <pre id="jsonPreviewArea" class="text-xs text-emerald-400 font-mono leading-relaxed whitespace-pre-wrap select-all"></pre>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="px-5 py-3 border-t border-slate-800 bg-[#121A2B] flex items-center justify-between text-xs text-slate-400">
+        <span id="jsonCountDetails">Showing current filtered list</span>
+        <button onclick="closeJsonModal()" class="text-slate-300 hover:text-white font-medium">Close</button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- MODAL: INDIA MEDAL WINNERS -->
+  <div id="medalsModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-[#121A2B] border border-orange-500/30 rounded-2xl max-w-2xl w-full max-h-[85vh] flex flex-col shadow-2xl overflow-hidden glow-india">
+      
+      <!-- Modal Header -->
+      <div class="px-5 py-4 border-b border-slate-800 flex items-center justify-between bg-gradient-to-r from-orange-950/40 to-slate-900">
+        <div class="flex items-center gap-3">
+          <div class="text-2xl">🇮🇳</div>
+          <div>
+            <h3 class="font-extrabold text-white text-base">India's Asian Games Medal Winners</h3>
+            <p class="text-xs text-orange-400">7 Medals Verified from Bornan Central Database</p>
+          </div>
+        </div>
+        <button onclick="closeMedalsModal()" class="text-slate-400 hover:text-white p-1 rounded-lg">
+          ✕
+        </button>
+      </div>
+
+      <!-- Medal Cards List -->
+      <div class="p-4 sm:p-5 flex-1 overflow-auto custom-scrollbar space-y-3.5 bg-[#0B0F19]" id="medalsListContainer">
+        <!-- Injected via JavaScript -->
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="px-5 py-3.5 border-t border-slate-800 bg-[#121A2B] flex items-center justify-between text-xs">
+        <span class="text-slate-400">Source: Official Live Results Feed (Bornan Sports)</span>
+        <button onclick="closeMedalsModal()" class="bg-slate-800 hover:bg-slate-700 text-white px-4 py-1.5 rounded-lg transition font-medium">
+          Close
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- JAVASCRIPT APPLICATION LOGIC -->
+  <script>
+    // --- STATE MANAGEMENT ---
+    let appData = {
+      schedule: {},
+      medals: [],
+      config: null
+    };
+
+    let selectedDate = "2026-09-23";
+    let filteredMatches = [];
+
+    // --- TIMEZONE HELPERS ---
+    function updateClocks() {
+      const now = new Date();
+
+      // IST: UTC + 5:30
+      const istOptions = { timeZone: 'Asia/Kolkata', hour12: true, hour: '2-digit', minute: '2-digit', second: '2-digit' };
+      document.getElementById('istClock').textContent = now.toLocaleTimeString('en-US', istOptions);
+
+      // JST: UTC + 9:00
+      const jstOptions = { timeZone: 'Asia/Tokyo', hour12: true, hour: '2-digit', minute: '2-digit', second: '2-digit' };
+      document.getElementById('jstClock').textContent = now.toLocaleTimeString('en-US', jstOptions);
+    }
+    setInterval(updateClocks, 1000);
+    updateClocks();
+
+    function formatTime(isoString) {
+      if (!isoString) return { ist: "TBD", jst: "TBD" };
+      try {
+        const d = new Date(isoString);
+        const istTime = d.toLocaleTimeString('en-US', { timeZone: 'Asia/Kolkata', hour12: true, hour: 'numeric', minute: '2-digit' });
+        const jstTime = d.toLocaleTimeString('en-US', { timeZone: 'Asia/Tokyo', hour12: true, hour: 'numeric', minute: '2-digit' });
+        return { ist: istTime, jst: jstTime };
+      } catch {
+        return { ist: isoString.split('T')[1]?.substring(0, 5) || "TBD", jst: "TBD" };
+      }
+    }
+
+    // --- SPORT ICONS MAPPING ---
+    const sportIcons = {
+      'CKT': '🏏', 'HOC': '🏑', 'FBL': '⚽', 'BKB': '🏀', 'BK3': '🏀', 'BDM': '🏸',
+      'TTE': '🏓', 'TEN': '🎾', 'TST': '🎾', 'VVO': '🏐', 'VBV': '🏐', 'BOX': '🥊',
+      'WRE': '🤼', 'JUD': '🥋', 'KBD': '🤼', 'SHO': '🎯', 'ARC': '🏹', 'ATH': '🏃',
+      'SWM': '🏊', 'DIV': '🏊', 'ROU': '🚣', 'CAN': '🛶', 'CSP': '🛶', 'CYC': '🚴',
+      'EQU': '🏇', 'MMA': '🥊', 'SAI': '⛵', 'SCL': '🧗', 'WLF': '🏋️', 'TTN': '🏓'
+    };
+
+    function getSportIcon(discCode) {
+      return sportIcons[discCode] || '🏅';
+    }
+
+    // --- DATA LOADING & INITIALIZATION ---
+    async function loadData() {
+      // 1. If preloaded via script tag (supports file:/// without server)
+      if (window.ASIAN_GAMES_BUNDLE && window.ASIAN_GAMES_BUNDLE.schedule) {
+        appData = window.ASIAN_GAMES_BUNDLE;
+        initDateTabs();
+        initSportDropdown();
+        renderMedals();
+        renderCurrentDateSchedule();
+        return;
+      }
+
+      try {
+        // 2. Try fetching bundle or local data file
+        let response = null;
+        try {
+          response = await fetch('/api/bundle');
+        } catch {}
+
+        if (!response || !response.ok) {
+          response = await fetch('./asian_games_data.json');
+        }
+
+        if (response.ok) {
+          appData = await response.json();
+          initDateTabs();
+          initSportDropdown();
+          renderMedals();
+          renderCurrentDateSchedule();
+        } else {
+          showErrorNotice();
+        }
+      } catch (err) {
+        console.error("Failed to load local bundle:", err);
+        showErrorNotice();
+      }
+    }
+
+    function showErrorNotice() {
+      document.getElementById('scheduleGrid').innerHTML = `
+        <div class="col-span-full glass-panel rounded-2xl p-8 text-center space-y-3">
+          <div class="text-3xl text-amber-400">⚠️</div>
+          <h4 class="font-bold text-white">Could not automatically load schedule data</h4>
+          <p class="text-xs text-slate-400 max-w-md mx-auto">
+            Please run <code class="bg-slate-800 px-2 py-0.5 rounded text-amber-300">python3 asian_games_server.py</code> in this directory and open <a href="http://localhost:8080" class="text-blue-400 underline">http://localhost:8080</a> to enjoy real-time API syncing.
+          </p>
+        </div>
+      `;
+    }
+
+    // --- RENDER DATE NAVIGATION TABS ---
+    function initDateTabs() {
+      const dates = Object.keys(appData.schedule).sort();
+      if (!dates.length) return;
+
+      const container = document.getElementById('dateTabsContainer');
+      container.innerHTML = '';
+
+      dates.forEach(dateStr => {
+        const count = appData.schedule[dateStr]?.length || 0;
+        const indCount = appData.schedule[dateStr]?.filter(isIndiaMatch).length || 0;
+
+        const dateObj = new Date(dateStr + "T00:00:00");
+        const dayNum = dateStr.split('-')[2];
+        const month = "Sep";
+        const weekday = dateObj.toLocaleDateString('en-US', { weekday: 'short' });
+
+        const isToday = dateStr === "2026-09-22";
+        const isTomorrow = dateStr === "2026-09-23";
+
+        const btn = document.createElement('button');
+        btn.id = `tab-${dateStr}`;
+        btn.className = `flex flex-col items-center justify-center min-w-[76px] px-3 py-2 rounded-xl border text-xs transition flex-shrink-0 cursor-pointer ${
+          dateStr === selectedDate 
+            ? 'bg-blue-600 border-blue-500 text-white font-bold shadow-lg shadow-blue-600/30' 
+            : 'bg-slate-900/90 border-slate-800 text-slate-300 hover:border-slate-700 hover:bg-slate-800'
+        }`;
+
+        btn.onclick = () => selectDate(dateStr);
+
+        btn.innerHTML = `
+          <div class="flex items-center gap-1">
+            <span class="text-[10px] font-semibold ${dateStr === selectedDate ? 'text-blue-200' : 'text-slate-400'} uppercase">${weekday}</span>
+            ${isToday ? '<span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>' : ''}
+          </div>
+          <div class="text-base font-black my-0.5">${dayNum} ${month}</div>
+          <div class="text-[9px] font-medium px-1.5 py-0.2 rounded-full ${
+            dateStr === selectedDate ? 'bg-white/20 text-white' : indCount > 0 ? 'bg-orange-500/20 text-orange-400' : 'bg-slate-800 text-slate-400'
+          }">
+            ${indCount > 0 ? `🇮🇳 ${indCount}` : `${count}`}
+          </div>
+        `;
+
+        container.appendChild(btn);
+      });
+    }
+
+    function selectDate(dateStr) {
+      selectedDate = dateStr;
+      
+      // Update Tab Styles
+      Object.keys(appData.schedule).forEach(d => {
+        const tab = document.getElementById(`tab-${d}`);
+        if (!tab) return;
+        const indCount = appData.schedule[d]?.filter(isIndiaMatch).length || 0;
+        const count = appData.schedule[d]?.length || 0;
+
+        if (d === selectedDate) {
+          tab.className = 'flex flex-col items-center justify-center min-w-[76px] px-3 py-2 rounded-xl border text-xs transition flex-shrink-0 cursor-pointer bg-blue-600 border-blue-500 text-white font-bold shadow-lg shadow-blue-600/30';
+        } else {
+          tab.className = 'flex flex-col items-center justify-center min-w-[76px] px-3 py-2 rounded-xl border text-xs transition flex-shrink-0 cursor-pointer bg-slate-900/90 border-slate-800 text-slate-300 hover:border-slate-700 hover:bg-slate-800';
+        }
+      });
+
+      renderCurrentDateSchedule();
+    }
+
+    // --- SPORT FILTER DROPDOWN ---
+    function initSportDropdown() {
+      const sportSelect = document.getElementById('sportFilter');
+      const sportsMap = new Map();
+
+      Object.values(appData.schedule).forEach(items => {
+        items.forEach(it => {
+          if (it.Disc && it.DiscDesc) {
+            sportsMap.set(it.Disc, it.DiscDesc);
+          }
+        });
+      });
+
+      // Sort alphabetically
+      const sortedSports = Array.from(sportsMap.entries()).sort((a, b) => a[1].localeCompare(b[1]));
+
+      sortedSports.forEach(([code, name]) => {
+        const opt = document.createElement('option');
+        opt.value = code;
+        opt.textContent = `${getSportIcon(code)} ${name}`;
+        sportSelect.appendChild(opt);
+      });
+    }
+
+    // --- CHECK IF EVENT INVOLVES INDIA ---
+    function isIndiaMatch(item) {
+      if (!item) return false;
+      const home = item.Home || {};
+      const away = item.Away || {};
+      if (home.Org === "IND" || away.Org === "IND") return true;
+      if (home.Name === "India" || away.Name === "India") return true;
+      if (home.Desc === "India" || away.Desc === "India") return true;
+      if (Array.isArray(item.Orgs) && item.Orgs.includes("IND")) return true;
+      if (Array.isArray(home.Members) && home.Members.some(m => m.Org === "IND")) return true;
+      if (Array.isArray(away.Members) && away.Members.some(m => m.Org === "IND")) return true;
+      const str = JSON.stringify(item);
+      return str.includes('"IND"') || str.includes('"India"');
+    }
+
+    // --- RENDER SCHEDULE ---
+    function renderCurrentDateSchedule() {
+      const allEvents = appData.schedule[selectedDate] || [];
+      document.getElementById('dateEventCount').textContent = `${allEvents.length} events scheduled for ${selectedDate}`;
+      applyFilters();
+    }
+
+    function applyFilters() {
+      const allEvents = appData.schedule[selectedDate] || [];
+      const indiaOnly = document.getElementById('indiaOnlyToggle').checked;
+      const medalOnly = document.getElementById('medalOnlyToggle').checked;
+      const selectedSport = document.getElementById('sportFilter').value;
+      const selectedStatus = document.getElementById('statusFilter').value;
+      const searchQuery = document.getElementById('searchInput').value.trim().toLowerCase();
+
+      filteredMatches = allEvents.filter(item => {
+        // India Only
+        if (indiaOnly && !isIndiaMatch(item)) return false;
+
+        // Medal Events
+        if (medalOnly && !item.Medal && !item.EventDesc?.toLowerCase().includes('final')) return false;
+
+        // Sport filter
+        if (selectedSport !== "ALL" && item.Disc !== selectedSport) return false;
+
+        // Status filter
+        if (selectedStatus !== "ALL") {
+          if (selectedStatus === "LIVE" && !item.IsLive) return false;
+          if (selectedStatus === "SCHEDULED" && item.Status !== "SCHEDULED" && item.Status !== "START_LIST") return false;
+          if (selectedStatus === "FINISHED" && item.Status !== "FINISHED") return false;
+        }
+
+        // Search query
+        if (searchQuery) {
+          const haystack = [
+            item.DiscDesc,
+            item.EventDesc,
+            item.UnitDesc,
+            item.VenueDesc,
+            item.Home?.Desc || item.Home?.Org || "",
+            item.Away?.Desc || item.Away?.Org || "",
+            item.Home?.Name || "",
+            item.Away?.Name || ""
+          ].join(" ").toLowerCase();
+
+          if (!haystack.includes(searchQuery)) return false;
+        }
+
+        return true;
+      });
+
+      // Sort filtered matches chronologically or by chosen criteria
+      const sortMode = document.getElementById('sortBy')?.value || 'TIME_ASC';
+      filteredMatches.sort((a, b) => {
+        const tA = a.DateTimeRaw || '9999';
+        const tB = b.DateTimeRaw || '9999';
+        if (sortMode === 'TIME_ASC') {
+          if (tA !== tB) return tA.localeCompare(tB);
+          return (a.DiscDesc || '').localeCompare(b.DiscDesc || '');
+        } else if (sortMode === 'TIME_DESC') {
+          if (tA !== tB) return tB.localeCompare(tA);
+          return (a.DiscDesc || '').localeCompare(b.DiscDesc || '');
+        } else if (sortMode === 'DISC') {
+          const dComp = (a.DiscDesc || '').localeCompare(b.DiscDesc || '');
+          if (dComp !== 0) return dComp;
+          return tA.localeCompare(tB);
+        } else if (sortMode === 'MEDAL') {
+          const isMedalA = (a.Medal && a.Medal !== '0') || a.UnitDesc?.toLowerCase().includes('final') ? 1 : 0;
+          const isMedalB = (b.Medal && b.Medal !== '0') || b.UnitDesc?.toLowerCase().includes('final') ? 1 : 0;
+          if (isMedalA !== isMedalB) return isMedalB - isMedalA;
+          return tA.localeCompare(tB);
+        }
+        return 0;
+      });
+
+      // Update Summary & Badge
+      document.getElementById('matchCountBadge').textContent = `${filteredMatches.length} ${filteredMatches.length === 1 ? 'match' : 'matches'}`;
+      document.getElementById('activeStatusSummary').textContent = indiaOnly 
+        ? `Showing Team India events on ${selectedDate} (${filteredMatches.length} found, sorted chronologically)`
+        : `Showing all nations on ${selectedDate} (${filteredMatches.length} found, sorted chronologically)`;
+
+      renderCards(filteredMatches);
+    }
+
+    function renderCards(matches) {
+      const grid = document.getElementById('scheduleGrid');
+      const emptyState = document.getElementById('emptyState');
+
+      if (!matches.length) {
+        grid.innerHTML = '';
+        emptyState.classList.remove('hidden');
+        return;
+      }
+
+      emptyState.classList.add('hidden');
+      grid.innerHTML = '';
+
+      matches.forEach(item => {
+        const card = document.createElement('div');
+        const isIndia = isIndiaMatch(item);
+        const icon = getSportIcon(item.Disc);
+        const times = formatTime(item.DateTimeRaw);
+        const isLive = item.IsLive;
+        const isMedal = !!item.Medal || item.UnitDesc?.toLowerCase().includes('final') || item.PhaseDesc?.toLowerCase().includes('final');
+
+        // Status badge format
+        let statusBadge = '';
+        if (isLive) {
+          statusBadge = `<span class="flex items-center gap-1.5 bg-red-500/20 text-red-400 border border-red-500/30 text-[10px] font-extrabold px-2 py-0.5 rounded-full uppercase tracking-wider">
+            <span class="w-2 h-2 rounded-full bg-red-500 pulse-live"></span> LIVE NOW
+          </span>`;
+        } else if (item.Status === "FINISHED") {
+          statusBadge = `<span class="bg-slate-800 text-slate-400 border border-slate-700 text-[10px] font-semibold px-2 py-0.5 rounded-full">
+            Completed
+          </span>`;
+        } else if (item.Status === "START_LIST") {
+          statusBadge = `<span class="bg-purple-500/20 text-purple-300 border border-purple-500/30 text-[10px] font-semibold px-2 py-0.5 rounded-full">
+            Start List
+          </span>`;
+        } else {
+          statusBadge = `<span class="bg-blue-500/20 text-blue-300 border border-blue-500/30 text-[10px] font-semibold px-2 py-0.5 rounded-full">
+            Scheduled
+          </span>`;
+        }
+
+        // Head-to-Head or Individual Event Layout
+        let matchBody = '';
+        const homeOrg = item.Home?.Org || "";
+        const awayOrg = item.Away?.Org || "";
+        const homeName = item.Home?.Name || item.Home?.Desc || homeOrg || "";
+        const awayName = item.Away?.Name || item.Away?.Desc || awayOrg || "";
+
+        if (item.isH2H || (homeName && awayName) || (homeOrg && awayOrg)) {
+          // Team vs Team layout
+          const isHomeInd = homeOrg === "IND" || homeName.toLowerCase().includes('india');
+          const isAwayInd = awayOrg === "IND" || awayName.toLowerCase().includes('india');
+
+          matchBody = `
+            <div class="bg-slate-900/90 rounded-xl p-3 border border-slate-800/90 space-y-2">
+              <div class="flex items-center justify-between gap-2">
+                <!-- Home Team -->
+                <div class="flex items-center gap-2 flex-1 min-w-0">
+                  <div class="w-7 h-7 rounded-lg ${isHomeInd ? 'bg-orange-500/20 border-orange-500/40 text-orange-400' : 'bg-slate-800 text-slate-300'} border flex items-center justify-center font-bold text-xs flex-shrink-0">
+                    ${isHomeInd ? '🇮🇳' : (homeOrg || homeName).substring(0, 3)}
+                  </div>
+                  <div class="min-w-0">
+                    <div class="font-extrabold text-xs text-white truncate ${isHomeInd ? 'text-orange-400' : ''}" title="${homeName}">
+                      ${homeName}
+                    </div>
+                    ${homeOrg && homeOrg !== homeName ? `<div class="text-[10px] text-slate-400 font-mono">${homeOrg}</div>` : ''}
+                  </div>
+                </div>
+
+                <!-- Score / VS -->
+                <div class="px-2 py-1 rounded bg-slate-800/80 border border-slate-700/60 font-mono font-bold text-xs text-slate-300 flex-shrink-0">
+                  ${item.Home?.Result && item.Away?.Result ? `${item.Home.Result} - ${item.Away.Result}` : 'VS'}
+                </div>
+
+                <!-- Away Team -->
+                <div class="flex items-center gap-2 flex-1 justify-end text-right min-w-0">
+                  <div class="min-w-0">
+                    <div class="font-extrabold text-xs text-white truncate ${isAwayInd ? 'text-orange-400' : ''}" title="${awayName}">
+                      ${awayName}
+                    </div>
+                    ${awayOrg && awayOrg !== awayName ? `<div class="text-[10px] text-slate-400 font-mono">${awayOrg}</div>` : ''}
+                  </div>
+                  <div class="w-7 h-7 rounded-lg ${isAwayInd ? 'bg-orange-500/20 border-orange-500/40 text-orange-400' : 'bg-slate-800 text-slate-300'} border flex items-center justify-center font-bold text-xs flex-shrink-0">
+                    ${isAwayInd ? '🇮🇳' : (awayOrg || awayName).substring(0, 3)}
+                  </div>
+                </div>
+              </div>
+            </div>
+          `;
+        } else {
+          // Individual Event / Multilateral Layout
+          matchBody = `
+            <div class="bg-slate-900/90 rounded-xl p-3 border border-slate-800/90 space-y-1.5">
+              <div class="flex items-center justify-between text-xs">
+                <span class="text-slate-400">Phase / Round:</span>
+                <span class="font-semibold text-slate-200">${item.PhaseDescA || item.PhaseDesc || 'Main Round'}</span>
+              </div>
+              <div class="text-xs font-semibold text-slate-100 flex items-center gap-1.5">
+                <span class="text-blue-400">📍</span>
+                <span class="truncate">${item.VenueDescS || item.VenueDesc || 'Venue TBD'}</span>
+              </div>
+            </div>
+          `;
+        }
+
+        card.className = `glass-panel rounded-2xl p-4 space-y-3.5 border transition hover:border-slate-600 ${
+          isIndia ? 'border-orange-500/30 bg-gradient-to-br from-[#161F30] via-[#121A2B] to-[#1a1c29]' : 'border-slate-800'
+        }`;
+
+        card.innerHTML = `
+          <!-- Card Header -->
+          <div class="flex items-center justify-between gap-2">
+            <div class="flex items-center gap-2 min-w-0">
+              <span class="text-xl flex-shrink-0">${icon}</span>
+              <div class="min-w-0">
+                <div class="font-bold text-xs text-slate-200 truncate flex items-center gap-1.5">
+                  <span>${item.DiscDesc}</span>
+                  ${isMedal ? '<span class="text-amber-400 text-xs" title="Medal Event">🥇</span>' : ''}
+                </div>
+                <div class="text-[11px] text-slate-400 truncate">${item.EventDesc || ''}</div>
+              </div>
+            </div>
+            <div class="flex items-center gap-1.5 flex-shrink-0">
+              <span class="bg-slate-900/90 border border-slate-700/90 text-orange-400 font-mono font-bold text-[11px] px-2 py-0.5 rounded shadow-sm" title="India Standard Time">
+                ${times.ist} IST
+              </span>
+              ${statusBadge}
+            </div>
+          </div>
+
+          <!-- Unit / Event Detail -->
+          <div class="text-xs font-bold text-white tracking-tight leading-snug">
+            ${item.UnitDesc || item.PhaseDesc || item.EventDesc}
+          </div>
+
+          <!-- Match Body -->
+          ${matchBody}
+
+          <!-- Timing & Venue Footer -->
+          <div class="pt-2 border-t border-slate-800/80 flex items-center justify-between text-xs">
+            <div class="flex items-center gap-2">
+              <div class="font-bold text-orange-400 flex items-center gap-1" title="India Standard Time">
+                <span>🕒</span>
+                <span>${times.ist} IST</span>
+              </div>
+              <span class="text-slate-600">|</span>
+              <div class="text-slate-400 font-medium" title="Japan Standard Time">
+                ${times.jst} JST
+              </div>
+            </div>
+
+            <!-- Single Item JSON Inspection -->
+            <button onclick="inspectSingleJson('${item.ResCode || item.Key}')" class="text-slate-500 hover:text-amber-400 transition" title="Inspect Raw JSON for this match">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg>
+            </button>
+          </div>
+        `;
+
+        grid.appendChild(card);
+      });
+    }
+
+    // --- RENDER MEDALS BANNER & MODAL ---
+    function renderMedals() {
+      const medals = appData.medals || [];
+      let gold = 0, silver = 0, bronze = 0;
+
+      medals.forEach(m => {
+        if (m.Medal === 'ME_GOLD') gold++;
+        else if (m.Medal === 'ME_SILVER') silver++;
+        else if (m.Medal === 'ME_BRONZE') bronze++;
+      });
+
+      document.getElementById('totalMedals').textContent = medals.length;
+      document.getElementById('goldMedals').textContent = gold;
+      document.getElementById('silverMedals').textContent = silver;
+      document.getElementById('bronzeMedals').textContent = bronze;
+
+      // Populate Medals Modal List
+      const container = document.getElementById('medalsListContainer');
+      container.innerHTML = '';
+
+      medals.forEach(m => {
+        const isGold = m.Medal === 'ME_GOLD';
+        const isSilver = m.Medal === 'ME_SILVER';
+        const medalEmoji = isGold ? '🥇' : isSilver ? '🥈' : '🥉';
+        const medalColor = isGold ? 'border-amber-500/50 bg-amber-950/20' : isSilver ? 'border-slate-400/40 bg-slate-900/40' : 'border-amber-700/40 bg-orange-950/20';
+
+        let membersHtml = '';
+        if (m.Members && m.Members.length > 0) {
+          membersHtml = `
+            <div class="mt-2.5 pt-2 border-t border-slate-800 text-xs">
+              <span class="text-slate-400 font-semibold block mb-1">Squad / Winning Members:</span>
+              <div class="flex flex-wrap gap-1.5">
+                ${m.Members.map(mem => `<span class="bg-slate-800/90 text-slate-200 px-2 py-0.5 rounded text-[11px] font-medium border border-slate-700/60">${mem.Name}</span>`).join('')}
+              </div>
+            </div>
+          `;
+        }
+
+        const div = document.createElement('div');
+        div.className = `p-4 rounded-xl border ${medalColor} space-y-1.5`;
+        div.innerHTML = `
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="text-2xl">${medalEmoji}</span>
+              <div>
+                <span class="font-extrabold text-sm text-white">${m.Name}</span>
+                <span class="text-xs text-slate-400 block">${m.DiscDesc} - ${m.EventDesc}</span>
+              </div>
+            </div>
+            <span class="text-[11px] font-bold uppercase px-2 py-0.5 rounded bg-slate-800 text-slate-300">
+              ${m.Medal.replace('ME_', '')}
+            </span>
+          </div>
+          ${membersHtml}
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    // --- JSON MODAL & EXPORT ---
+    function openJsonModal() {
+      const dataToExport = filteredMatches.length > 0 ? filteredMatches : (appData.schedule[selectedDate] || []);
+      document.getElementById('jsonPreviewArea').textContent = JSON.stringify(dataToExport, null, 2);
+      document.getElementById('jsonCountDetails').textContent = `Exporting ${dataToExport.length} events for ${selectedDate}`;
+      document.getElementById('jsonModal').classList.remove('hidden');
+    }
+
+    function closeJsonModal() {
+      document.getElementById('jsonModal').classList.add('hidden');
+    }
+
+    function inspectSingleJson(resCodeOrKey) {
+      const allEvents = appData.schedule[selectedDate] || [];
+      const item = allEvents.find(x => (x.ResCode === resCodeOrKey || x.Key === resCodeOrKey));
+      if (item) {
+        document.getElementById('jsonPreviewArea').textContent = JSON.stringify(item, null, 2);
+        document.getElementById('jsonCountDetails').textContent = `Match Key: ${item.ResCode || item.Key}`;
+        document.getElementById('jsonModal').classList.remove('hidden');
+      }
+    }
+
+    function copyJsonToClipboard() {
+      const text = document.getElementById('jsonPreviewArea').textContent;
+      navigator.clipboard.writeText(text).then(() => {
+        const btnText = document.getElementById('copyJsonText');
+        btnText.textContent = "Copied!";
+        setTimeout(() => { btnText.textContent = "Copy JSON"; }, 2000);
+      });
+    }
+
+    function downloadCurrentJson() {
+      const dataToExport = filteredMatches.length > 0 ? filteredMatches : (appData.schedule[selectedDate] || []);
+      const jsonStr = JSON.stringify(dataToExport, null, 2);
+      const blob = new Blob([jsonStr], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `asian_games_india_schedule_${selectedDate}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    // --- MEDALS MODAL ---
+    function openMedalsModal() {
+      document.getElementById('medalsModal').classList.remove('hidden');
+    }
+
+    function closeMedalsModal() {
+      document.getElementById('medalsModal').classList.add('hidden');
+    }
+
+    // --- LIVE SYNC FROM API ---
+    async function syncLiveData() {
+      const syncBtn = document.getElementById('syncBtn');
+      const syncText = document.getElementById('syncText');
+      const syncIcon = document.getElementById('syncIcon');
+
+      syncBtn.disabled = true;
+      syncText.textContent = "Syncing...";
+      syncIcon.classList.add('animate-spin');
+
+      try {
+        const res = await fetch(`/api/schedule?date=${selectedDate}`);
+        if (res.ok) {
+          const freshData = await res.json();
+          appData.schedule[selectedDate] = freshData;
+          applyFilters();
+          syncText.textContent = "Updated!";
+          setTimeout(() => { syncText.textContent = "Sync Live"; }, 2000);
+        } else {
+          syncText.textContent = "Offline Mode";
+          setTimeout(() => { syncText.textContent = "Sync Live"; }, 2000);
+        }
+      } catch (e) {
+        syncText.textContent = "Static Mode";
+        setTimeout(() => { syncText.textContent = "Sync Live"; }, 2000);
+      } finally {
+        syncBtn.disabled = false;
+        syncIcon.classList.remove('animate-spin');
+      }
+    }
+
+    function resetFilters() {
+      document.getElementById('searchInput').value = '';
+      document.getElementById('sportFilter').value = 'ALL';
+      document.getElementById('statusFilter').value = 'ALL';
+      document.getElementById('indiaOnlyToggle').checked = true;
+      document.getElementById('medalOnlyToggle').checked = false;
+      applyFilters();
+    }
+
+    // --- LIVE 30-SECOND AUTO SYNC ---
+    let autoSyncTimer = null;
+    let autoSyncSecondsLeft = 30;
+    const AUTO_SYNC_INTERVAL = 30;
+
+    function startAutoSync() {
+      if (autoSyncTimer) clearInterval(autoSyncTimer);
+      autoSyncSecondsLeft = AUTO_SYNC_INTERVAL;
+      updateAutoSyncBadge();
+
+      autoSyncTimer = setInterval(async () => {
+        const toggle = document.getElementById('autoSyncToggle');
+        if (!toggle || !toggle.checked) return;
+
+        autoSyncSecondsLeft--;
+        if (autoSyncSecondsLeft <= 0) {
+          autoSyncSecondsLeft = AUTO_SYNC_INTERVAL;
+          await silentBackgroundSync();
+        }
+        updateAutoSyncBadge();
+      }, 1000);
+    }
+
+    function toggleAutoSync() {
+      const isEnabled = document.getElementById('autoSyncToggle').checked;
+      const dot = document.getElementById('autoSyncDot');
+      const text = document.getElementById('autoSyncCountdown');
+
+      if (isEnabled) {
+        dot.className = "w-2 h-2 rounded-full bg-emerald-400 pulse-live";
+        text.className = "font-mono text-[10px] text-emerald-400 font-bold w-6 text-center";
+        startAutoSync();
+      } else {
+        dot.className = "w-2 h-2 rounded-full bg-slate-600";
+        text.className = "font-mono text-[10px] text-slate-500 font-bold w-6 text-center";
+        text.textContent = "Off";
+      }
+    }
+
+    function updateAutoSyncBadge() {
+      const toggle = document.getElementById('autoSyncToggle');
+      if (!toggle || !toggle.checked) return;
+      const badge = document.getElementById('autoSyncCountdown');
+      if (badge) badge.textContent = `${autoSyncSecondsLeft}s`;
+    }
+
+    async function silentBackgroundSync() {
+      try {
+        const cacheBuster = Date.now();
+        let res = null;
+
+        // 1. Try local proxy server if running
+        try {
+          res = await fetch(`/api/schedule?date=${selectedDate}&_=${cacheBuster}`, { cache: 'no-store' });
+        } catch {}
+
+        // 2. Otherwise fetch data bundle from GitHub Pages / static host
+        if (!res || !res.ok) {
+          res = await fetch(`./asian_games_data.json?_=${cacheBuster}`, { cache: 'no-store' });
+          if (res.ok) {
+            const freshBundle = await res.json();
+            if (freshBundle && freshBundle.schedule) {
+              appData = freshBundle;
+              applyFilters();
+              showBriefUpdateIndicator();
+            }
+            return;
+          }
+        } else {
+          const freshData = await res.json();
+          if (Array.isArray(freshData)) {
+            appData.schedule[selectedDate] = freshData;
+            applyFilters();
+            showBriefUpdateIndicator();
+          }
+        }
+      } catch (err) {
+        console.debug("Silent background sync:", err);
+      }
+    }
+
+    function showBriefUpdateIndicator() {
+      const badge = document.getElementById('autoSyncCountdown');
+      if (badge) {
+        badge.textContent = "✓";
+        setTimeout(() => { updateAutoSyncBadge(); }, 1200);
+      }
+    }
+
+    // Boot
+    loadData();
+    startAutoSync();
+  </script>
+</body>
+</html>
